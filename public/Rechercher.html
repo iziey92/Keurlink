@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Rechercher - KeurLink</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Recherchez un logement ou publiez une annonce sur KeurLink."
+    />
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Variables & Base */
+      :root {
+        --accent: #f97316;
+        --accent-light: #fb923c;
+        --accent-glow: rgba(249, 115, 22, 0.4);
+        --bg-input: rgba(0, 0, 0, 0.6);
+        --border-light: rgba(255, 255, 255, 0.15);
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: #ffffff; /* Forcé en blanc pour lisibilité max */
+        overflow-x: hidden;
+      }
+
+      main {
+        padding-top: 140px;
+        padding-bottom: 80px;
+        position: relative;
+        z-index: 1;
+      }
+
+      /* Animation d'apparition fluide */
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .section-block {
+        margin-bottom: 100px;
+        opacity: 0; /* Caché au départ pour l'animation */
+        animation: slideUp 0.8s ease forwards;
+      }
+
+      .section-block:nth-child(2) {
+        animation-delay: 0.3s; /* Décalage pour la deuxième section */
+      }
+
+      .section-header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+
+      .section-header h2 {
+        font-family: "Outfit", sans-serif;
+        font-size: clamp(2rem, 5vw, 2.8rem);
+        font-weight: 700;
+        margin-bottom: 15px;
+        /* Dégradé coloré pour le titre */
+        background: linear-gradient(
+          135deg,
+          #ffffff 0%,
+          var(--accent-light) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .section-header p {
+        color: #cbd5e1; /* Gris clair lisible */
+        font-size: 1.1rem;
+      }
+
+      /* Carte de formulaire Premium */
+      .form-card {
+        background: rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--border-light);
+        border-radius: 24px;
+        padding: 40px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+      }
+
+      /* Lueur au survol de la carte */
+      .form-card:hover {
+        border-color: rgba(249, 115, 22, 0.3);
+        box-shadow:
+          0 25px 60px rgba(0, 0, 0, 0.6),
+          0 0 30px rgba(249, 115, 22, 0.1);
+      }
+
+      /* Ligne décorative en haut */
+      .form-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: linear-gradient(90deg, var(--accent), var(--accent-light));
+        transform: scaleX(0);
+        transition: transform 0.5s ease;
+      }
+
+      .form-card:hover::before {
+        transform: scaleX(1);
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 25px;
+        margin-bottom: 35px;
+      }
+
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .form-group.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .form-group label {
+        font-size: 0.95rem;
+        color: #e2e8f0; /* Label clair */
+        font-weight: 500;
+        letter-spacing: 0.5px;
+      }
+
+      /* Champs de saisie stylisés */
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        background: var(--bg-input);
+        border: 1px solid var(--border-light);
+        color: #ffffff; /* Texte utilisateur blanc */
+        padding: 16px 20px;
+        border-radius: 12px;
+        font-family: "Inter", sans-serif;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        outline: none;
+        width: 100%;
+      }
+
+      /* Style des placeholders */
+      ::placeholder {
+        color: rgba(255, 255, 255, 0.4); /* Placeholder visible mais discret */
+        opacity: 1;
+      }
+
+      /* Effet Focus Premium */
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        border-color: var(--accent);
+        background: rgba(0, 0, 0, 0.8);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+      }
+
+      /* Correction pour le select (flèche) */
+      .form-group select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 15px center;
+        background-size: 18px;
+      }
+
+      /* Options du dropdown (couleur de fond) */
+      .form-group select option {
+        background: #0f0f75;
+        color: white;
+      }
+
+      .form-group textarea {
+        min-height: 130px;
+        resize: vertical;
+      }
+
+      /* Boutons */
+      .btn-submit {
+        display: block;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        padding: 18px;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        color: #000;
+        border: none;
+        cursor: pointer;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.3s ease;
+      }
+
+      .btn-submit:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px var(--accent-glow);
+      }
+
+      /* Footer Correction */
+      footer {
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 40px 0;
+        position: relative;
+        z-index: 2;
+      }
+
+      footer .container {
+        text-align: center;
+      }
+
+      footer p {
+        color: #ffffff; /* Texte blanc */
+        font-size: 0.95rem;
+      }
+
+      footer strong {
+        color: var(--accent-light);
+        font-weight: 700;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        .form-card {
+          padding: 25px;
+          border-radius: 16px;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Background Layer (Orbes animés pour la couleur) -->
+    <div class="bg-layer" aria-hidden="true">
+      <div class="bg-gradient"></div>
+      <div class="bg-grid"></div>
+      <!-- Orbes colorées pour animer le fond -->
+      <div class="bg-orb bg-orb-1"></div>
+      <div class="bg-orb bg-orb-2"></div>
+    </div>
+
+    <header id="header">
+      <div class="container">
+        <div class="nav">
+          <img
+            src="images/Logok.png"
+            alt="KërLink Logo"
+            class="logo"
+            data-magnetic
+          />
+          <nav aria-label="Navigation principale">
+            <a href="acceuil.html" data-magnetic>Accueil</a>
+            <a href="Rechercher.html" data-magnetic>Rechercher</a>
+            <a href="Publier.html" data-magnetic>Publier</a>
+            <a href="Connexion.html" data-magnetic>Connexion</a>
+            <a href="A propos.html" data-magnetic>À propos</a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <!-- SECTION 1 : RECHERCHE DE LOGEMENT -->
+      <section class="section-block">
+        <div class="section-header">
+          <h2>Rechercher un logement</h2>
+          <p>Trouvez la colocation ou le logement idéal à Dakar.</p>
+        </div>
+
+        <div class="form-card">
+          <form id="search-housing-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="search-city">Ville ou Quartier</label>
+                <input
+                  type="text"
+                  id="search-city"
+                  name="city"
+                  placeholder="Ex: Point E, Dakar"
+                />
+              </div>
+              <div class="form-group">
+                <label for="search-type">Type de bien</label>
+                <select id="search-type" name="type">
+                  <option value="">Tous les types</option>
+                  <option value="chambre">Chambre</option>
+                  <option value="studio">Studio</option>
+                  <option value="appartement">Appartement</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="search-budget">Budget max (FCFA)</label>
+                <input
+                  type="number"
+                  id="search-budget"
+                  name="budget"
+                  placeholder="Ex: 150000"
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn-primary btn-submit" data-magnetic>
+              Lancer la recherche
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- SECTION 2 : Faire UNE ANNONCE -->
+      <section class="section-block">
+        <div class="section-header">
+          <h2>faire une annonce</h2>
+          <p>Publiez votre annonce d'article ou de logement rapidement.</p>
+        </div>
+
+        <div class="form-card">
+          <form id="publish-ad-form">
+            <div class="form-grid">
+              <div class="form-group full-width">
+                <label for="ad-title">Titre de l'annonce</label>
+                <input
+                  type="text"
+                  id="ad-title"
+                  name="title"
+                  placeholder="Ex: Chambre meublée disponible immédiatement"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="ad-category">Catégorie</label>
+                <select id="ad-category" name="category">
+                  <option value="colocation">Colocation</option>
+                  <option value="article">Article d'occasion</option>
+                  <option value="location">Location simple</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="ad-price">Prix (FCFA)</label>
+                <input
+                  type="number"
+                  id="ad-price"
+                  name="price"
+                  placeholder="Ex: 75000"
+                  required
+                />
+              </div>
+
+              <div class="form-group full-width">
+                <label for="ad-description">Description</label>
+                <textarea
+                  id="ad-description"
+                  name="description"
+                  placeholder="Décrivez votre bien, les charges incluses, les conditions..."
+                  required
+                ></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="ad-contact">Contact (Téléphone)</label>
+                <input
+                  type="tel"
+                  id="ad-contact"
+                  name="contact"
+                  placeholder="77 123 45 67"
+                />
+              </div>
+            </div>
+
+            <button type="submit" class="btn-primary btn-submit" data-magnetic>
+              Publier l'annonce
+            </button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="container">
+        <p>
+          &copy; 2026 KeurLink - Tous droits réservés | Développé par
+          <strong>LACITEBRAND</strong>
+        </p>
+      </div>
+    </footer>
+
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-outline" aria-hidden="true"></div>
+
+    <script src="animations.js"></script>
+    <!-- page-specific behaviour now in animations.js -->
+  </body>
+</html>
